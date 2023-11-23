@@ -15,6 +15,8 @@
             <property name="hibernate.show_sql" value="true"/> <!--쿼리 출력-->
             <property name="hibernate.format_sql" value="true"/> <!--이쁘게 콘솔에 출력-->
             <property name="hibernate.use_sql_comments" value="true"/><!--쿼리가 왜 실행됬는지 알려줌-->
+            <property name="hibernate.jdbc.batch_size" value="10"/> <!--사이즈만큼 모아서 데이터베이스에 쿼리를 전송-->
+            
 <!--            <property name="hibernate.hbm2ddl.auto" value="create" />-->
         </properties>
     </persistence-unit>
