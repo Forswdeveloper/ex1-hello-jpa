@@ -88,7 +88,7 @@ public class jpaMain {
 //            Member member = em.find(Member.class,150L);
 //            member.setName("ZZZZZ");
 //            System.out.println("=================");
-            Member member = new Member(200L,"member200");
+            Member member = new Member(200L,"member200",10);
             em.persist(member);
             em.flush();
 
