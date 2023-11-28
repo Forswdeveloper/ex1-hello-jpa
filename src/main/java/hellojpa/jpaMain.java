@@ -88,9 +88,15 @@ public class jpaMain {
 //            Member member = em.find(Member.class,150L);
 //            member.setName("ZZZZZ");
 //            System.out.println("=================");
-            Member member = new Member(200L,"member200",10);
+//            Member member = new Member(200L,"member200",10);
+//            em.persist(member);
+//            em.flush();
+            Member member = new Member();
+            member.setId(3L);
+            member.setUsername("C");
+            member.setRoleType(RoleType.GUEST);  //EnumType.ORDINAL 일 때 추가적으로 ENUM을 등록하면 꼬일 수 있음.
+
             em.persist(member);
-            em.flush();
 
             System.out.print("==================");
 
