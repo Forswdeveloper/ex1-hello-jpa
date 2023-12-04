@@ -91,14 +91,27 @@ public class jpaMain {
 //            Member member = new Member(200L,"member200",10);
 //            em.persist(member);
 //            em.flush();
-            Member member = new Member();
-            member.setId(3L);
-            member.setUsername("C");
-            member.setRoleType(RoleType.GUEST);  //EnumType.ORDINAL 일 때 추가적으로 ENUM을 등록하면 꼬일 수 있음.
+            Member member1 = new Member();
+            member1.setUsername("A");
+            Member member2 = new Member();
+            member2.setUsername("B");
+            Member member3 = new Member();
+            member3.setUsername("C");
+            //member.setRoleType(RoleType.GUEST);  //EnumType.ORDINAL 일 때 추가적으로 ENUM을 등록하면 꼬일 수 있음.
+            System.out.println("==================");
+            //영속성 컨텍스트에는 pk가 존재해야함으 멤버 시퀀스를 가져옴 그 다음 영속성 컨텍스트에 저장함.
+            //그래서 성능상 이슈가 생길 수 밖에 없기에 allocationSize를 씀.
+            em.persist(member1); // 1, 51
+            em.persist(member2); // MEM
+            em.persist(member3); // MEM
 
-            em.persist(member);
+            System.out.println("member1.id = " + member1.getId());
+            System.out.println("member2.id = " + member2.getId());
+            System.out.println("member3.id = " + member3.getId());
 
-            System.out.print("==================");
+
+            System.out.println("==================");
+
 
             //쿼리 실행 시점
             tx.commit();
