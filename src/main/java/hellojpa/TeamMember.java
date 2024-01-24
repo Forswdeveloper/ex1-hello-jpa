@@ -15,21 +15,13 @@ public class TeamMember {
     //JPA에게 어떤 관계인지 알려줘야함.
     //팀 1 팀멤버 N
     @ManyToOne  //어떤관계인지
-    @JoinColumn(name = "TEAM_ID") //매핑컬럼
+    @JoinColumn(name = "TEAM_ID",insertable = false,updatable = false) // 단순 조회용
     private Team team;
-
-    public Team getTeam() {
-        return team;
-    }
 
 //    public void changeTeam(Team team) {
 //        this.team = team;
 //        team.getMembers().add(this);
 //    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
 
     public Long getId() {
         return id;

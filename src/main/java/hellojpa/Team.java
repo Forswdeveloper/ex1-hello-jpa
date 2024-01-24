@@ -13,7 +13,9 @@ public class Team {
     private String name;
 
     //mappedBy -> 변수명
-    @OneToMany(mappedBy = "team")
+//    @OneToMany(mappedBy = "team")
+    @OneToMany
+    @JoinColumn(name = "TEAM_ID") // 일대다
     private List<TeamMember> members = new ArrayList<>();
 
     public Long getId() {
@@ -40,8 +42,8 @@ public class Team {
         this.members = members;
     }
 
-    public void addMember(TeamMember teamMember){
-        teamMember.setTeam(this);
-        members.add(teamMember);
-    }
+//    public void addMember(TeamMember teamMember){
+//        teamMember.setTeam(this);
+//        members.add(teamMember);
+//    }
 }
