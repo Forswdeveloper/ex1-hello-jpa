@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.concurrent.locks.Lock;
 
 @Entity
 //@Table(name = "USER") //관례상 USER에 속해있는 테이블에 작업해줌
@@ -25,6 +26,18 @@ public class Member {
 
     @Column(name = "name",nullable = false)
     private String username;
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
+    public Locker getLocker() {
+        return locker;
+    }
+
+    public void setLocker(Locker locker) {
+        this.locker = locker;
+    }
 
     public Member() {
     }
