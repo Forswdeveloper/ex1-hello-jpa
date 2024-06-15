@@ -1,5 +1,7 @@
 package hellojpa;
 
+import hellojpa.team.Team;
+import hellojpa.teamMember.TeamMember;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -21,23 +23,37 @@ public class jpaMain {
 
         try{
 
-            TeamMember teamMember = new TeamMember();
-            teamMember.setUsername("teamMember1");
-            //teamMember.setTeam(team); // 양방향 매핑시 연관관계의 주인에 값을 입력해야한다.
-            em.persist(teamMember);
-
             Team team = new Team();
             team.setName("TeamA");
-            team.getMembers().add(teamMember);
             em.persist(team);
 
-            // 객체지향적으로 생각했을 때에는 양쪽 모두 멤버의 값을 설정해줘야함.
+            TeamMember teamMember = new TeamMember();
+            teamMember.setUsername("teamMember1");
+            teamMember.setTeam(team); // 양방향 매핑시 연관관계의 주인에 값을 입력해야한다.
+            em.persist(teamMember);
+
+//            team.getMembers().add(teamMember);
+            team.addMember(teamMember);
+
+            // 객체지향적으로 생각했을 때에는 양쪽 모두 멤버의 값을 설정해주는것을 권장함.
 
             //team.addMember(teamMember);
 
             //조인쿼리확인
-            //em.flush();
-            //em.clear();
+            em.flush();
+            em.clear();
+
+            Team findTeam = em.find(Team.class, team.getId());
+            List<TeamMember> members = findTeam.getMembers();
+
+            System.out.println("------------------");
+            System.out.println(members.size());
+            for (TeamMember member : members) {
+                System.out.println("member = " + member.getUsername());
+
+            }
+            System.out.println("------------------");
+
 
             //flush,clear를 안해주면 값이 양방향으로 설정되지 않아서 조회가 되지 않아서 값을 확인할 수 없음.
             //또 테스트 케이스 작성할 때 값을 확인할 수 없는 상황이 생길 수 있음.

@@ -1,5 +1,6 @@
 package hellojpa;
 
+import hellojpa.orgMember.Member;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,11 +8,12 @@ import jakarta.persistence.*;
 public class Locker {
 
     @Id @GeneratedValue
+    @Column(name = "LOCKER_ID")
     private Long id;
 
     private String name;
 
-    @OneToOne(mappedBy = "MEMBER_ID")
+    @OneToOne(mappedBy = "locker")
     private Member member;
 
     public Long getId() {

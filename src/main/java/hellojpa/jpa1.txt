@@ -34,7 +34,7 @@
 //            === After ===
 //                                Hibernate:
 //                /* insert for
-//                    hellojpa.Member */insert
+//                    hellojpa.orgMember.Member */insert
 //                                into
 //                        Member (name,Id)
 //                        values

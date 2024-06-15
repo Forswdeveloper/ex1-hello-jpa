@@ -1,5 +1,6 @@
-package hellojpa;
+package hellojpa.team;
 
+import hellojpa.teamMember.TeamMember;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -12,10 +13,8 @@ public class Team {
     private Long id;
     private String name;
 
-    //mappedBy -> 변수명
-//    @OneToMany(mappedBy = "team")
-    @OneToMany
-    @JoinColumn(name = "TEAM_ID") // 일대다
+    //mappedBy -> 양방향 연관관계 조회용 명시
+    @OneToMany(mappedBy = "team")
     private List<TeamMember> members = new ArrayList<>();
 
     public Long getId() {
@@ -42,8 +41,8 @@ public class Team {
         this.members = members;
     }
 
-//    public void addMember(TeamMember teamMember){
-//        teamMember.setTeam(this);
-//        members.add(teamMember);
-//    }
+    public void addMember(TeamMember teamMember){
+        teamMember.setTeam(this);
+        members.add(teamMember);
+    }
 }

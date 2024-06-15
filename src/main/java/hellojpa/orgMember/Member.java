@@ -1,5 +1,7 @@
-package hellojpa;
+package hellojpa.orgMember;
 
+import hellojpa.Locker;
+import hellojpa.team.Team;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "MEMBER_SEQ_GENERATOR")
+    @Column(name="MEMBER_ID")
     private Long id;
 
     @Column(name = "name",nullable = false)
@@ -30,6 +33,10 @@ public class Member {
     @OneToOne
     @JoinColumn(name = "LOCKER_ID")
     private Locker locker;
+
+    @ManyToOne
+    @JoinColumn(name="TEAM_ID")
+    private Team team;
 
     public Locker getLocker() {
         return locker;
@@ -56,5 +63,13 @@ public class Member {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
