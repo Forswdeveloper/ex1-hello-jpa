@@ -14,8 +14,11 @@ public class Team {
     private String name;
 
     //mappedBy -> 양방향 연관관계 조회용 명시
-    @OneToMany(mappedBy = "team")
-    private List<TeamMember> members = new ArrayList<>();
+//    @OneToMany(mappedBy = "team")
+//    or
+//    @OneToMany
+//    @JoinColumn(name="TEAM_ID", insertable = false, updatable = false)
+//    private List<TeamMember> members = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -33,16 +36,16 @@ public class Team {
         this.name = name;
     }
 
-    public List<TeamMember> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<TeamMember> members) {
-        this.members = members;
-    }
-
-    public void addMember(TeamMember teamMember){
-        teamMember.setTeam(this);
-        members.add(teamMember);
-    }
+//    public List<TeamMember> getMembers() {
+//        return members;
+//    }
+//
+//    public void setMembers(List<TeamMember> members) {
+//        this.members = members;
+//    }
+//
+//    public void addMember(TeamMember teamMember){
+//        teamMember.setTeam(this);
+//        members.add(teamMember);
+//    }
 }

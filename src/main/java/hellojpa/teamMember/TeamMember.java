@@ -14,8 +14,8 @@ public class TeamMember {
     private String username;
 
     //JPA에게 어떤 관계인지 알려줘야함.
-    //팀 1 팀멤버 N : 팀이 멤버를 참조할 생각이 없음. 다대일. 연관관계의 주인 : 팀
-    @ManyToOne  //어떤관계인지
+    //팀 1 팀멤버 N : 팀이 멤버를 참조할 생각이 없음. 다대일. 연관관계의 주인 : 멤버
+    @ManyToOne  //어떤관계인지 다대일
     @JoinColumn(name = "TEAM_ID") // 단순 조회용 명시 표현 insertable updatable
     private Team team;
 
@@ -47,4 +47,5 @@ public class TeamMember {
     public void setTeam(Team team) {
         this.team = team;
     }
+
 }
