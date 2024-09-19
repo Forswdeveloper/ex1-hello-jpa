@@ -1,11 +1,12 @@
 package hellojpa.Item;
 
+import hellojpa.comn.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "DTYPE")
-public class Item {
+public abstract class Item extends BaseEntity {
     @Id @GeneratedValue
     private Long Id;
 

@@ -1,5 +1,6 @@
 package hellojpa.team;
 
+import hellojpa.comn.BaseEntity;
 import hellojpa.teamMember.TeamMember;
 import jakarta.persistence.*;
 
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Team {
+public class Team extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "TEAM_ID")
     private Long id;

@@ -1,6 +1,7 @@
 package hellojpa;
 
 import hellojpa.Item.Movie;
+import hellojpa.orgMember.Member;
 import hellojpa.team.Team;
 import hellojpa.teamMember.TeamMember;
 import jakarta.persistence.EntityManager;
@@ -8,6 +9,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class jpaMain {
@@ -33,17 +35,15 @@ public class jpaMain {
             //테이블관 연관관계가 없기 때문에 객체가 테이블에 맞게 모델링 되어있는 안좋은 상황 협력 관계를 만들 수 없음.
             //쿼리 실행 시점
 
-             Movie movie = new Movie();
-             movie.setDirector("AAAA");
-             movie.setActor("BBBB");
-             movie.setName("Away with Wind");
-             movie.setPrice(100000);
+            Member member = new Member();
+            member.setUsername("user");
+            member.setCreatedBy("user");
+            member.setCreatedDate(LocalDateTime.now());
 
-             em.persist(movie);
+            em.persist(member);
+
             em.flush();
             em.clear();
-            Movie findMovie = em.find(Movie.class, movie.getId());
-            System.out.println("findMovie = " + findMovie);
 
              tx.commit();
         }catch (Exception e) {
