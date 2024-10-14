@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,14 +64,24 @@ public class jpaMain {
             em.clear();
 
             //영속성 컨텍스트에 찾는 엔티티가 이미 있으면 em.getReference()를 호출해도 실제 엔티티 반환
-            Member findMember1 = em.find(Member.class, member1.getId());
-            System.out.println("findMember1.getClass() = " + findMember1.getClass());
+//            Member findMember1 = em.find(Member.class, member1.getId());
+//            System.out.println("findMember1.getClass() = " + findMember1.getClass());
+//
+//            Member findMember2 = em.getReference(Member.class, member1.getId());
+            //System.out.println("findMember2.getClass() = " + findMember2.getClass());
 
-            Member findMember2 = em.getReference(Member.class, member1.getId());
-            System.out.println("findMember2.getClass() = " + findMember2.getClass());
+            //System.out.println("findMember1 == findMember2 : " + (findMember1 == findMember2));
 
-            System.out.println("findMember1 == findMember2 : " + (findMember1 == findMember2));
+            //영속성 컨텍스트 준영속 및 해지
+            Member refMember = em.getReference(Member.class,member1.getId());
+            System.out.println("refMember.getClass() = " + refMember.getClass()); //Proxy
+//            em.detach(refMember); // em.cloase(refMember); em.clear();
+//            refMember.getUsername(); //could not initialize proxy exception
+            //프록시 확인
+            System.out.println("emf.getPersistenceUnitUtil().isLoaded(refMember) = " + emf.getPersistenceUnitUtil().isLoaded(refMember)); //인스턴스의 초기화 여부 확인
+            System.out.println("refMember.getClass().getName() = " + refMember.getClass().getName()); //프록시 클래스 확인
 
+            Hibernate.initialize(refMember); //강제 초기화 refMember.getUserName() 도 강제 초기화에 해당함.
 
             tx.commit();
         }catch (Exception e) {
