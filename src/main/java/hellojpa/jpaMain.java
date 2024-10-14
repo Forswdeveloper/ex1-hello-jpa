@@ -45,7 +45,34 @@ public class jpaMain {
             em.flush();
             em.clear();
 
-             tx.commit();
+//            Member findMember = em.find(Member.class, member.getId());
+            Member findMember = em.getReference(Member.class, member.getId());
+            System.out.println("findMember.getClass() = " + findMember.getClass());
+            System.out.println("findMember.getId() = " + findMember.getId());
+            System.out.println("findMember.getUsername() = " + findMember.getUsername());
+
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            em.persist(member2);
+
+            em.flush();
+            em.clear();
+
+            //영속성 컨텍스트에 찾는 엔티티가 이미 있으면 em.getReference()를 호출해도 실제 엔티티 반환
+            Member findMember1 = em.find(Member.class, member1.getId());
+            System.out.println("findMember1.getClass() = " + findMember1.getClass());
+
+            Member findMember2 = em.getReference(Member.class, member1.getId());
+            System.out.println("findMember2.getClass() = " + findMember2.getClass());
+
+            System.out.println("findMember1 == findMember2 : " + (findMember1 == findMember2));
+
+
+            tx.commit();
         }catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
@@ -54,4 +81,10 @@ public class jpaMain {
         }
         emf.close();
     }
+
+    private static void logic(Member m1,Member m2) {
+        System.out.println("m1 is Member? : " + (m1 instanceof Member));
+        System.out.println("m2 is Member? : " + (m2 instanceof Member));
+    }
+
 }
