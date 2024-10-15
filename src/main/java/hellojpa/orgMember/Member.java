@@ -35,14 +35,14 @@ public class Member extends BaseEntity {
     @Column(name = "name",nullable = false)
     private String username;
 
-    @OneToOne
+    @OneToOne//EAGERdf
     @JoinColumn(name = "LOCKER_ID")
     private Locker locker;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member") //OneToMany는 기본이 LAZY
     private List<MemberProduct> memberProducts = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) //프록시 조회, 값을 사용하는 빈도 수가 많을 시 즉시로딩 설정 고려
     @JoinColumn(name="TEAM_ID")
     private Team team;
 
