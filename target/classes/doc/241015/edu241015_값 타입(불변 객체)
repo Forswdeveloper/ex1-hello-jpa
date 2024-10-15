@@ -18,3 +18,20 @@ JPA의 값 타입과 불변 객체
  - 불변 객체 : 생성 시점 이후 절대 값을 변경할 수 없는 객체
  - 생성자로만 값을 설정하고 수정자(Setter)를 만들지 않으면 됨
  - 참고 : Integer, String은 자바가 제공하는 대표적인 불변 객체
+
+ Address address = new Address("Seoul", "Gwankakku", "08832");
+ Member member1 = new Member();
+ member1.setUsername("Hello1");
+ member1.setHomeAddress(address);
+ em.persist(member1);
+
+ //같은 임베디드 타입 참조 중일 때 값 변경 시도
+ //Setter 생성하지 않음으로 불변하도록 설정.
+ //member1.getHomeAddress().setCity("New Seoul"); // -> update 쿼리 두번 실행됨.  공유해서 쓰고 싶으면 Entity를 사용해서 써야함.
+ //값을 변경하고 싶을 때는 새로 객체를 만들어야 함.
+ Address newAddress = new Address("New Seoul", address.getStreet(), address.getZipcode());
+
+ Member member2 = new Member();
+ member2.setUsername("Hello2");
+ member2.setHomeAddress(newAddress);
+ em.persist(member2);
