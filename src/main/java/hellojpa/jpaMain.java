@@ -1,6 +1,8 @@
 package hellojpa;
 
 import hellojpa.Item.Movie;
+import hellojpa.family.Child;
+import hellojpa.family.Parent;
 import hellojpa.orgMember.Member;
 import hellojpa.team.Team;
 import hellojpa.teamMember.TeamMember;
@@ -23,36 +25,23 @@ public class jpaMain {
         tx.begin();
 
         try{
-            Team teamA = new Team();
-            teamA.setName("TeamA");
-            em.persist(teamA);
 
-            Team teamB = new Team();
-            teamB.setName("TeamB");
-            em.persist(teamB);
+            Child childA = new Child();
+            Child childB = new Child();
 
-            Member member1 = new Member();
-            member1.setUsername("Member1");
-            member1.setTeam(teamA);
-            em.persist(member1);
+            Parent parent = new Parent();
+            parent.addChild(childA);
+            parent.addChild(childB);
 
-            Member member2 = new Member();
-            member2.setUsername("Member2");
-            member2.setTeam(teamB);
-            em.persist(member2);
+            //한번에 자동 영속화 필요. CASECADE의 필요성.
+            em.persist(parent);
 
             em.flush();
             em.clear();
 
-//            Member findMember = em.find(Member.class, member1.getId());
-//            System.out.println("findMember = " + findMember.getTeam().getClass());
-//            System.out.println("-----------------------------------------");
-//            System.out.println("Team Name : " + member1.getTeam().getName()); //지연로딩 설정으로 인해 team 사용 시 초기화
-
-            //즉시로딩 설정 시 값이 존재해야 하므로 쿼리 조회 시 부하 발생.
-            //Fetch join 설정으로 값 동시 조회하여 부하 제거
-            List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
-                    .getResultList();
+            //고아객체 제거
+            Parent findParent = em.find(Parent.class, parent.getId());
+            findParent.getChildList().remove(0); //자식의 생명주기를 관리.
 
             tx.commit();
         }catch (Exception e) {
