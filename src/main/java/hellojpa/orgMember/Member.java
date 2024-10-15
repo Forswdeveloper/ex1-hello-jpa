@@ -4,12 +4,15 @@ import hellojpa.Locker;
 import hellojpa.MemberProduct;
 import hellojpa.comn.BaseEntity;
 import hellojpa.comn.embedded.Address;
+import hellojpa.comn.embedded.AddressEntity;
 import hellojpa.comn.embedded.Period;
 import hellojpa.team.Team;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 //@Table(name = "USER") //관례상 USER에 속해있는 테이블에 작업해줌
@@ -65,6 +68,20 @@ public class Member extends BaseEntity {
                     , column = @Column(name = "WORK_ZIPCODE"))
     })
     private Address workAddress;
+
+    //값 타입 컬렉션
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID")) // name : 컬렉션 테이블명
+    @Column(name = "FOOD_NAME") //예외적으로 String 단일 값을 가지는 구조로 원하는 컬럼명을 지정하여 생성 가능.
+    private Set<String> favoriteFoods = new HashSet<>();
+
+    //@OrderColumn(name = "address_history_order") //순서 값이 들어감으로 구별이 가능하지만, 순서 누락 시 값이 NULL로 설정될 위험이 있음. 복잡한 사용이 예상되면 사용하면 안됨.
+//    @ElementCollection
+//    @CollectionTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+//    private List<Address> addressHistory = new ArrayList<>(); // Address의 객체를 사용.
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<>(); // 값 타입보다 유리.
 
     public void setLocker(Locker locker) {
         this.locker = locker;
@@ -124,5 +141,29 @@ public class Member extends BaseEntity {
 
     public void setWorkAddress(Address workAddress) {
         this.workAddress = workAddress;
+    }
+
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+//    public List<Address> getAddressHistory() {
+//        return addressHistory;
+//    }
+//
+//    public void setAddressHistory(List<Address> addressHistory) {
+//        this.addressHistory = addressHistory;
+//    }
+
+    public List<AddressEntity> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<AddressEntity> addressHistory) {
+        this.addressHistory = addressHistory;
     }
 }

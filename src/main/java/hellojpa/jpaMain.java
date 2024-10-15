@@ -2,6 +2,7 @@ package hellojpa;
 
 import hellojpa.Item.Movie;
 import hellojpa.comn.embedded.Address;
+import hellojpa.comn.embedded.AddressEntity;
 import hellojpa.comn.embedded.Period;
 import hellojpa.family.Child;
 import hellojpa.family.Parent;
@@ -13,6 +14,7 @@ import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class jpaMain {
     public static void main(String[] args) {
@@ -27,22 +29,53 @@ public class jpaMain {
         tx.begin();
 
         try{
-            Address address = new Address("Seoul", "Gwankakku", "08832");
-            Member member1 = new Member();
-            member1.setUsername("Hello1");
-            member1.setHomeAddress(address);
-            em.persist(member1);
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(new Address("NewCity","NewSteet","100000"));
 
-            //같은 임베디드 타입 참조 중일 때 값 변경 시도
-            //Setter 생성하지 않음으로 불변하도록 설정.
-            //member1.getHomeAddress().setCity("New Seoul"); // -> update 쿼리 두번 실행됨.  공유해서 쓰고 싶으면 Entity를 사용해서 써야함.
-            //값을 변경하고 싶을 때는 새로 객체를 만들어야 함.
-            Address newAddress = new Address("New Seoul", address.getStreet(), address.getZipcode());
+            member.getFavoriteFoods().add("삼겹살");
+            member.getFavoriteFoods().add("오리불고기");
+            member.getFavoriteFoods().add("김밥");
 
-            Member member2 = new Member();
-            member2.setUsername("Hello2");
-            member2.setHomeAddress(newAddress);
-            em.persist(member2);
+//            member.getAddressHistory().add(new Address("oldcity1","oldstreet1","100001"));
+//            member.getAddressHistory().add(new Address("oldcity2","oldstreet2","100002"));
+            member.getAddressHistory().add(new AddressEntity("oldcity1","oldstreet1","100001"));
+            member.getAddressHistory().add(new AddressEntity("oldcity2","oldstreet2","100002"));
+            em.persist(member); //영속성 컨텍스트에 할당되면 컬렉도 라이프 사이클에 같이 포함됨. -> 값 타입이기 때문
+
+            em.flush();
+            em.clear();
+
+            System.out.println("-----------------------------------");
+            // 조회
+            Member findMember = em.find(Member.class, member.getId());
+
+            //기본적으로 지연로딩이라서 호출해야 조회해옴.
+//            List<Address> addressHistory = findMember.getAddressHistory();
+//            List<AddressEntity> addressHistory = findMember.getAddressHistory();
+////            for (Address address : addressHistory) {
+////                System.out.println("address = " + address.getCity());
+////            }
+//            for (AddressEntity address : addressHistory) {
+//                System.out.println("address = " + address.getAddress().getCity());
+//            }
+//            Set<String> favoriteFoods = findMember.getFavoriteFoods();
+//            for (String favoriteFood : favoriteFoods) {
+//                System.out.println("favoriteFood = " + favoriteFood);
+//            }
+//
+//            //수정   set 사용 안됨 불변 유지
+//            Address homeAddress = findMember.getHomeAddress();
+//            findMember.setHomeAddress(new Address("New City2",homeAddress.getStreet(),homeAddress.getZipcode()));
+//
+//            findMember.getFavoriteFoods().remove("김밥"); //String은 불변객체 따라서 변경할 수 없고 삭제 후 다시 새로 넣어줘야함
+//            findMember.getFavoriteFoods().add("만두");
+//
+//            //모든 값 삭제 후 Insert 실행.
+////            findMember.getAddressHistory().remove(new Address("oldcity1","oldstreet1","100001")); // equals 사용 시점.
+////            findMember.getAddressHistory().add(new Address("NewCity3","Newstreet3","100001")); // equals 사용 시점.
+//            findMember.getAddressHistory().remove(new AddressEntity("oldcity1","oldstreet1","100001")); // equals 사용 시점.
+//            findMember.getAddressHistory().add(new AddressEntity("NewCity3","Newstreet3","100001")); // equals 사용 시점.
 
             tx.commit();
         }catch (Exception e) {
