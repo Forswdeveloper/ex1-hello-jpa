@@ -14,8 +14,6 @@ public class BaseEntity {
     private String lastModifiedBy;
     private LocalDateTime lastModifiedDate;
 
-    private String testColumn;
-
     public String getCreatedBy() {
         return createdBy;
     }

@@ -2,17 +2,14 @@ package hellojpa.orgMember;
 
 import hellojpa.Locker;
 import hellojpa.MemberProduct;
-import hellojpa.Product;
 import hellojpa.comn.BaseEntity;
+import hellojpa.comn.embedded.Address;
+import hellojpa.comn.embedded.Period;
 import hellojpa.team.Team;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 @Entity
 //@Table(name = "USER") //관례상 USER에 속해있는 테이블에 작업해줌
@@ -50,11 +47,27 @@ public class Member extends BaseEntity {
         return locker;
     }
 
+    //기간
+    @Embedded
+    private Period workPeriod = null; //값이 NULL이면 해당 값 모두 NULL
+    //주소
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    //속성 재정의
+    @AttributeOverrides({
+            @AttributeOverride(name = "city"
+                    , column = @Column(name = "WORK_CITY")),
+            @AttributeOverride(name = "street"
+                    , column = @Column(name = "WORK_STREET")),
+            @AttributeOverride(name = "zipcode"
+                    , column = @Column(name = "WORK_ZIPCODE"))
+    })
+    private Address workAddress;
+
     public void setLocker(Locker locker) {
         this.locker = locker;
-    }
-
-    public Member() {
     }
 
     public Long getId() {
@@ -87,5 +100,29 @@ public class Member extends BaseEntity {
 
     public void setMemberProducts(List<MemberProduct> memberProducts) {
         this.memberProducts = memberProducts;
+    }
+
+    public Period getWorkPeriod() {
+        return workPeriod;
+    }
+
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public Address getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(Address workAddress) {
+        this.workAddress = workAddress;
     }
 }

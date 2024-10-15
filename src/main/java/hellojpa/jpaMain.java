@@ -1,6 +1,8 @@
 package hellojpa;
 
 import hellojpa.Item.Movie;
+import hellojpa.comn.embedded.Address;
+import hellojpa.comn.embedded.Period;
 import hellojpa.family.Child;
 import hellojpa.family.Parent;
 import hellojpa.orgMember.Member;
@@ -26,22 +28,12 @@ public class jpaMain {
 
         try{
 
-            Child childA = new Child();
-            Child childB = new Child();
+            Member member = new Member();
+            member.setUsername("Hello");
+            member.setHomeAddress(new Address("Seoul","Gwankakku","08832"));
+            member.setWorkPeriod(new Period());
 
-            Parent parent = new Parent();
-            parent.addChild(childA);
-            parent.addChild(childB);
-
-            //한번에 자동 영속화 필요. CASECADE의 필요성.
-            em.persist(parent);
-
-            em.flush();
-            em.clear();
-
-            //고아객체 제거
-            Parent findParent = em.find(Parent.class, parent.getId());
-            findParent.getChildList().remove(0); //자식의 생명주기를 관리.
+            em.persist(member);
 
             tx.commit();
         }catch (Exception e) {
