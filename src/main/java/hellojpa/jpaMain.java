@@ -27,13 +27,22 @@ public class jpaMain {
         tx.begin();
 
         try{
+            Address address = new Address("Seoul", "Gwankakku", "08832");
+            Member member1 = new Member();
+            member1.setUsername("Hello1");
+            member1.setHomeAddress(address);
+            em.persist(member1);
 
-            Member member = new Member();
-            member.setUsername("Hello");
-            member.setHomeAddress(new Address("Seoul","Gwankakku","08832"));
-            member.setWorkPeriod(new Period());
+            //같은 임베디드 타입 참조 중일 때 값 변경 시도
+            //Setter 생성하지 않음으로 불변하도록 설정.
+            //member1.getHomeAddress().setCity("New Seoul"); // -> update 쿼리 두번 실행됨.  공유해서 쓰고 싶으면 Entity를 사용해서 써야함.
+            //값을 변경하고 싶을 때는 새로 객체를 만들어야 함.
+            Address newAddress = new Address("New Seoul", address.getStreet(), address.getZipcode());
 
-            em.persist(member);
+            Member member2 = new Member();
+            member2.setUsername("Hello2");
+            member2.setHomeAddress(newAddress);
+            em.persist(member2);
 
             tx.commit();
         }catch (Exception e) {

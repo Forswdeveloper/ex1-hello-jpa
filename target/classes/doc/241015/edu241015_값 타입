@@ -44,5 +44,8 @@ JPA의 데이터 타입 분류
 
         @AttributeOverride 속성 재정의
         - 한 엔티티에서 같은 값 타입을 사용하기 위해서
-            - @AttributeOverrides, @AttributeOverride를 사용해서 컬럼명 속성을 재정
+            - @AttributeOverrides, @AttributeOverride를 사용해서 컬럼명 속성을 재정의
+
+        임베디드 타입과 NULL
+        - 임베디드 타입의 값이 null이면 매핑한 컬럼 값은 모두 null
     - 컬렉션 값 타입(collection value type)
