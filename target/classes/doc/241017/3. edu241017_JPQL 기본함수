@@ -1,0 +1,52 @@
+JPQL 기본함수
+
+- CONCAT
+- SUBSTRING
+- TRIM
+- LOWER, UPPER
+- TRIM
+- LOWER, UPPER
+- LENGTH
+- LOCATE
+- ABS,SQRT,MOD
+- SIZE, INDEX(JPA 용도)
+
+사용자 정의 함수 호출
+- 하이버네이트는 사용전 방언에 추가해야 한다.
+	- 사용하는 DB 방언을 상속받고, 사용자 정의 함수를 등록한다.
+		-select function('group_concat', i.name) from Item I
+
+Team team = new Team();
+team.setName("TeamA");
+em.persist(team);
+
+for (int i = 1; i <= 100; i++) {
+    Member member = new Member();
+    member.setUsername("Member"+i);
+    member.setAge(i);
+    if (i % 2 == 0) {
+        member.changeTeam(team);
+        member.setType(MemberType.USER);
+    } else {
+        member.setType(MemberType.ADMIN);
+    }
+    em.persist(member);
+}
+
+em.flush();
+em.clear();
+
+
+String query  = "select concat('a','b') from Member m";
+String query1  = "select substring(m.username,2,3) from Member m";
+String query2  = "select locate('de','abcdef') from Member m"; //de의 위치
+String query3  = "select size(t.members) from Team t"; //컬렉션의 크기
+//엔티티 타입 (상속관계) => em.createQuery("select i from Item i where type(i) = Book",Item.class) => DTYPE = 'Book'
+String query4  = "select function('group_concat',m.username) from Member m"; //컬렉션의 크기
+
+List<String> users = em.createQuery(query4,String.class)
+//                    .setFirstResult(1)
+//                    .setMaxResults(10)
+        .getResultList();
+
+=System.out.println("users = " + users);

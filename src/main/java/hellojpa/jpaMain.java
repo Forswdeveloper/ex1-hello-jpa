@@ -10,6 +10,9 @@ import hellojpa.orgMember.Member;
 import hellojpa.team.Team;
 import hellojpa.teamMember.TeamMember;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
@@ -29,8 +32,8 @@ public class jpaMain {
         tx.begin();
 
         try{
-            List<Member> findMembers = em.createQuery( "select m from Member m where m.username like '%kim%'",Member.class).getResultList(); // 테이블이 아닌 엔티티를 기준으로 조회하는 것임.
-            //강의 8분 24초
+
+
             tx.commit();
         }catch (Exception e) {
             tx.rollback();

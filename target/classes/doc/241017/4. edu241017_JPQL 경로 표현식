@@ -1,0 +1,62 @@
+JPQL 경로 표현식
+
+- .(점)을 찍어 객체 그래프를 탐색하는 것
+
+select m.username -> 상태 필드
+  from Member m
+  join m.team t   -> 단일 값 연관 필드
+  Join m.orders o -> 컬렉션 값 연관 필드
+ where t.name = '팀A'
+
+경로 표현식 용어 정리
+
+- 상태 필드 
+	- 단순히 값을 저장하기 위한 필드
+	- 특징 : 경로 탐색의 끝, 탐색 불가능.
+- 연관 필드 : 연관관계를 위한 필드
+	- 단일 값 연관 필드
+		- @ManyToOne, @OneToOne, 대상이 엔티티
+		- 특징 : 묵시적 내부 조인(inner join) 발생, 탐색 가능.
+	- 컬렉션 값 연관 필드
+		- @ManyToMany, 대상이 컬렉션
+		- 특징
+			- 묵시적 내부 조인 발생, 탐색 불가능.
+			- FROM 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능.
+
+주의 사항
+
+- 항상 내부 조인을 활용해서 쓸 것
+- 컬렉션은 경로 탐색의 끝, 명시적 조인을 통해 별칭을 어더야 함.
+- 경로 탐색은 주로 SELECT, WHERE 절에서 사용하지만 묵시적 조인으로 인해 SQL의 FROM(JOIN)절에 영향을 줌.
+
+Team team = new Team();
+team.setName("TeamA");
+em.persist(team);
+
+for (int i = 1; i <= 100; i++) {
+    Member member = new Member();
+    member.setUsername("Member"+i);
+    member.setAge(i);
+    if (i % 2 == 0) {
+        member.changeTeam(team);
+        member.setType(MemberType.USER);
+    } else {
+        member.setType(MemberType.ADMIN);
+    }
+    em.persist(member);
+}
+
+em.flush();
+em.clear();
+
+//묵시적 조인은 쓰면 안됨. 명시적 조인을 활용해서 쓰도록
+String query  = "select m.team.name from Member m"; // 묵시적 내부 조인 발생. 탐색 가능.
+String query1 = "select t.members from Team t"; //묵시적 내부 조인 발생. 탐색 불가능. t.member.username -> 불가능.
+String query2 = "select m.username from Team t join t.members m"; //명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능.
+
+List<String> users = em.createQuery(query,String.class)
+        .setFirstResult(1)
+        .setMaxResults(10)
+        .getResultList();
+
+System.out.println("users = " + users);

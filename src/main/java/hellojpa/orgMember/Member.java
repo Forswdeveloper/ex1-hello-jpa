@@ -32,7 +32,7 @@ public class Member extends BaseEntity {
     @Column(name="MEMBER_ID")
     private Long id;
 
-    @Column(name = "name",nullable = false)
+    @Column(name = "NAME",nullable = false)
     private String username;
 
     @OneToOne//EAGERdf

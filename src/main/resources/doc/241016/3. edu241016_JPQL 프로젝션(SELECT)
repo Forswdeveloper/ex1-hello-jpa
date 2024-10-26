@@ -1,0 +1,58 @@
+JPQL 프로젝션(SELECT)
+
+- SELECT 절에 조회할 대상을 지정하는 것
+- 프로젝션 대상 : 엔티티, 임베디드 타입, 스칼라 타입(숫자, 문자등 기본 데이터 타입)
+- SELECT m FROM Member m -> 엔티티 프로젝션
+- SELECT m.team FROM Member m -> 엔티티 프로젝션
+- SELECT m.address FROM Member m -> 임베디드 타입 프로젝션
+- SELECT m.username, m.age FROM Member m -> 스칼라 타입 프로젝션
+- DISTINCT로 중복 제거
+ 
+프로젝션 여러 값 조회
+
+1. Query 타입으로 조회
+2. Object[] 타입으로 조회
+3. New 명령어로 조회
+	- 단순 값을 DTO로 바로 조회
+		- SELECT new jpabook.jpql.UserDTO(m.username,m.age) FROM Member m
+	- 패키지 명을 포함한 전체 클래스 명 입력
+	- 순서와 타입이 일치하는 생성자 필요
+Member member = new Member();
+            member.setUsername("Member1");
+            member.setAge(10);
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            //엔티티 프로젝션
+            List<Member> result = em.createQuery("select m from Member m ", Member.class)
+                    .getResultList();
+
+            List<Team> result2 = em.createQuery("select t from Member m join m.team t", Team.class)
+                    .getResultList();
+
+            //임베디드 프로젝션
+            List<Address> result3 = em.createQuery("select o.address from Order o", Address.class)
+                    .getResultList();
+
+            //스칼라 프로젝션
+            List<Object[]> result4 = em.createQuery("select m.username,m.age from Member m ")
+                    .getResultList();
+            //여러 스칼라 프로젝션 조회 방법 1
+//            Object o = result4.get(0);
+//            Object[] objects = (Object[]) o;
+//            System.out.println("username = " + objects[0]);
+//            System.out.println("age = " + objects[1]);
+
+            //방법 2
+            Object[] objects2 = result4.get(0);
+            System.out.println("username = " + objects2[0]);
+            System.out.println("age = " + objects2[1]);
+
+            //방법 3
+            List<MemberDTO> resultList = em.createQuery("select new jpql.DTO.MemberDTO(m.username,m.age) from Member m ", MemberDTO.class)
+                    .getResultList();
+            MemberDTO memberDTO = resultList.get(0);
+            System.out.println("memberDTO.username = " + memberDTO.getUsername());
+            System.out.println("memberDTO.age = " + memberDTO.getAge());

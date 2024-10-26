@@ -1,0 +1,44 @@
+JPQL 엔티티 직접 사용
+
+기본 키 값
+
+- JPQL에서 엔티티를 직접 사용하면 SQL에서 해당 엔티티의 기본 키 값을 사용
+
+JPQL
+
+Select count(m.id) from Member m //엔티티의 아이디를 사용
+Select count(m) from Member m //엔티티를 직접 사용
+
+SQL
+
+Select count(m.id) as cnt from Member m // 둘다 같은 쿼리 
+
+왜래 키 값
+
+Team team = new Team();
+team.setName("TeamA");
+em.persist(team);
+
+Member member = new Member();
+member.setUsername("Member1");
+member.setAge(1);
+member.setType(MemberType.USER);
+member.changeTeam(team);
+em.persist(member);
+em.flush();
+em.clear();
+
+String query  = "select m from Member m where m.id = :member";
+String query2 = "select m from Member m where m.team = :team";
+
+Member findMember = em.createQuery(query, Member.class)
+        .setParameter("member", member.getId())
+        .getSingleResult();
+
+List<Member> findTeamMember = em.createQuery(query2, Member.class)
+        .setParameter("team", team)
+        .getResultList();
+
+
+System.out.println("findMember = " + findMember);
+System.out.println("findTeamMember = " + findTeamMember);

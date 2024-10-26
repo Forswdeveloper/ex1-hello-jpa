@@ -1,0 +1,65 @@
+JPQL 타입 표현, 기타식, 조건식(CASE 등등)
+
+JPQL 타입 표현
+- 문자 : 'HELLO', 'She"s'
+- 숫자 : 10L(Long), 10D(Double), 10F(Float)
+- Boolean : TRUE, FALSE
+- ENUM : jpabook.MemberType.Admin (패키지명 포함)
+- 엔티티 타입 : TYPE(m) = Member (상속 관계에서 사용)
+
+JPQL 기타식
+- SQL과 문법이 같은 식
+- EXISTS, IN
+- AND, OR, NOT
+- =, >, >=, <, <=, <>
+- BETWEEN, LIKE, IS NULL
+
+Team team = new Team();
+team.setName("TeamA");
+em.persist(team);
+
+for (int i = 1; i <= 100; i++) {
+    Member member = new Member();
+    member.setUsername("Member1");
+    member.setAge(i);
+    if (i % 2 == 0) {
+        member.changeTeam(team);
+        member.setType(MemberType.USER);
+    } else {
+        member.setType(MemberType.ADMIN);
+    }
+    em.persist(member);
+}
+
+em.flush();
+em.clear();
+
+String query  = "select m.username from Member m " +
+                "where m.type = :userType " +
+                "order by m.age desc";
+List<String> users = em.createQuery(query)
+        .setParameter("userType", MemberType.ADMIN)
+        .setFirstResult(1)
+        .setMaxResults(10)
+        .getResultList();
+
+//엔티티 타입 (상속관계) => em.createQuery("select i from Item i where type(i) = Book",Item.class) => DTYPE = 'Book'
+
+
+조건식 - CASE 식
+- COALESCE: 하나씩 조회해서 NULL이 아니면 반환
+- NULLIF : 두 값이 같으면 NULL 반환, 다르면 첫번째 값 반환
+
+String query  = "select  m.username, " +
+                        "case when m.age <= 10 then '학생요금' " +
+                             "when m.age >= 60 then '경로요금' " +
+                             "else '일반요금' " +
+                        "end as charge " +
+                "from Member m " +
+                "order by m.age desc";
+String query2 = "select coalesce(m.username, '이름 없는 회원') as username from Member m ";
+String query3 = "select nullif(m.username, '관리자') as username from Member m ";
+List<String> users = em.createQuery(query)
+        .setFirstResult(1)
+        .setMaxResults(10)
+        .getResultList();
